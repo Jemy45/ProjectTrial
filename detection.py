@@ -16,6 +16,8 @@ class FrameProcessor(QObject):
         if ret:
             # Perform some processing operations here
             processed_frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+            # processed_frame = cv.resize(processed_frame, (381, 640))
+            # print(f" 1 - {frame.shape}")
             self.frame_processed.emit(processed_frame)
 
     def process_frame_2(self):
@@ -24,5 +26,7 @@ class FrameProcessor(QObject):
         if ret:
             # Perform some processing operations here
             processed_frame = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+            # processed_frame = cv.resize(processed_frame, (381, 640))
+            # print(f" 2 - {frame.shape}")
             self.frame_processed.emit(processed_frame)
             
