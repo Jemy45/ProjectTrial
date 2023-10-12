@@ -25,21 +25,21 @@ class MYGUI(QMainWindow):
         self.video_label_2 = self.findChild(QLabel, "camera2_label")
         
         # Create FrameProcessor instances for each camera
-        # self.frame_processor_1 = FrameProcessor()
+        self.frame_processor_1 = FrameProcessor(url1)
         self.frame_processor_2 = FrameProcessor(0)
 
         # Connect the frame_processed signals to update methods
-        # self.frame_processor_1.frame_processed.connect(self.update_frame_1)
+        self.frame_processor_1.frame_processed.connect(self.update_frame_1)
         self.frame_processor_2.frame_processed.connect(self.update_frame_2)
         
         # Create timers to start processing frames for each camer
-        # self.timer_camera1 = QTimer(self)
+        self.timer_camera1 = QTimer(self)
         self.timer_camera2 = QTimer(self)
 
-        # self.timer_camera1.timeout.connect(self.frame_processor_1.process_frame_1)
+        self.timer_camera1.timeout.connect(self.frame_processor_1.process_frame_1)
         self.timer_camera2.timeout.connect(self.frame_processor_2.process_frame_2)
         
-        # self.timer_camera1.start(30)  # Update the frame every 30 milliseconds for camera 1
+        self.timer_camera1.start(30)  # Update the frame every 30 milliseconds for camera 1
         self.timer_camera2.start(30)  # Update the frame every 30 milliseconds for camera 2
 
         self.show()
@@ -77,7 +77,7 @@ class MYGUI(QMainWindow):
 
     def closeEvent(self, event):
         # Release the cameras and perform cleanup for both processors
-        # self.frame_processor_1.camera.release()
+        self.frame_processor_1.camera.release()
         self.frame_processor_2.camera.release()
         event.accept()    
 

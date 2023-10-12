@@ -10,19 +10,19 @@ class FrameProcessor(QObject):
         super().__init__()
         self.camera = cv.VideoCapture(url)
 
-    def process_frame_1(self, frame):
+    def process_frame_1(self):
         ret, frame = self.camera.read()
         
         if ret:
-            # Perform your frame processing operations here
+            # Perform some processing operations here
             processed_frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
             self.frame_processed.emit(processed_frame)
 
-    # def process_frame_2(self, frame):
-    #     ret, frame = self.camera.read()
+    def process_frame_2(self):
+        ret, frame = self.camera.read()
         
-    #     if ret:
-    #         # Perform your frame processing operations here
-    #         processed_frame = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-    #         self.frame_processed.emit(processed_frame)
+        if ret:
+            # Perform some processing operations here
+            processed_frame = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+            self.frame_processed.emit(processed_frame)
             
