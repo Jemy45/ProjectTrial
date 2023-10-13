@@ -6,9 +6,11 @@ from PyQt5.QtGui import QImage, QPixmap
 from os import path
 import cv2 as cv
 from detection import FrameProcessor
+import gemy 
 
 url1 = 'http://192.168.220.244:8080/video'
 url2 = 'http://192.168.220.220:8080/video'
+esp8266_ip = "192.168.4.1" 
 
 class MYGUI(QMainWindow):
     
@@ -96,9 +98,7 @@ class MYGUI(QMainWindow):
         self.actionclose.triggered.connect(exit)
     
     def update_frame_1(self, processed_frame):
-
         # Display the processed frame from camera 1 on the label camera1_label
-
         if processed_frame.shape == (0, 0, 0):
             return
         
@@ -110,9 +110,7 @@ class MYGUI(QMainWindow):
         self.video_label_1.setPixmap(pixmap)      
 
     def update_frame_2(self, processed_frame):
-
         # Display the processed frame from camera 2 on the label camera2_label
-
         if processed_frame.shape == (0, 0, 0):
             return
         
@@ -128,6 +126,30 @@ class MYGUI(QMainWindow):
         self.frame_processor_1.camera.release()
         self.frame_processor_2.camera.release()
         event.accept()    
+
+    def keyPressEvent(self, event):
+        # Handle key events here
+        key = event.key()
+
+        if key == Qt.Key_W:
+            print("W key is pressed")
+            gemy.moveForward()
+
+        if key == Qt.Key_A:
+            print("A key is pressed")
+            gemy.moveLeft()
+
+        if key == Qt.Key_S:
+            print("S key is pressed")
+            gemy.stopMotors()
+
+        if key == Qt.Key_D:
+            print("D key is pressed")
+            gemy.moveRight()
+
+        if key == Qt.Key_X:
+            print("X key is pressed")
+            gemy.moveBackward()
 
     def increment_metals(self):
             self.metals += 1
