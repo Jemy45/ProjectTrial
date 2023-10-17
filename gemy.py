@@ -1,11 +1,14 @@
-import tkinter as tk
+#-------------Library Included -------------------------------
+import keyboard
 import requests
 
+#----------default access point ip for esp8266 also you can get it from ide -------------------
 esp8266_ip = "192.168.4.1" 
 
-def sendCommand():
+#---------Functions for sending strings for my motion over url---------------------
+def sendCommand(error):
     try:
-        cmd= int(txtCMD.get())
+        cmd= error
         url = f"http://{esp8266_ip}/set_number?number={cmd}"
         response = requests.get(url)
         if response.status_code == 200:
@@ -14,7 +17,7 @@ def sendCommand():
             print(f"Failed to send number. Status code: {response.status_code}")
     except:
         print("Invalid input. Please enter a valid number.")
-    
+
 def moveForward():
     try:   
         print("move forward")
@@ -49,7 +52,7 @@ def moveLeft():
     except:
         print("Error has happened") 
 def moveRight():
-    try:   
+    try:  
         print("move right")
         data_to_send = "right"
         url = f"http://{esp8266_ip}/postdata"
@@ -70,7 +73,52 @@ def stopMotors():
 
     except:
         print("Error has happened") 
-def lineFollower():
+def moveFowardRight():
+    try:   
+        print("move forward right")
+        data_to_send = "eright"
+        url = f"http://{esp8266_ip}/postdata"
+        payload = {'data': data_to_send}
+
+        response = requests.post(url, data=payload)
+
+    except:
+        print("Error has happened") 
+def moveForwardLeft():
+    try:   
+        print("move forward left")
+        data_to_send = "qleft"
+        url = f"http://{esp8266_ip}/postdata"
+        payload = {'data': data_to_send}
+
+        response = requests.post(url, data=payload)
+
+    except:
+        print("Error has happened") 
+
+
+def servoClockwise():
+    try:
+        print("clockwise")
+        data_to_send="cw"
+        url = f"http://{esp8266_ip}/postdata"  
+        payload = {'data': data_to_send}
+        response = requests.post(url, data=payload)
+
+    except:
+        print("Error has happened")        
+def servoAnticlockwise():
+    try:
+        print("Anticlockwise")
+        data_to_send="ccw"
+        url = f"http://{esp8266_ip}/postdata"  
+        payload = {'data': data_to_send}
+        response = requests.post(url, data=payload)
+
+    except:
+        print("Error has happened")    
+
+def lineFollower_auto():
     try:   
         print("automated car")
         data_to_send = "auto"
@@ -81,18 +129,35 @@ def lineFollower():
 
     except:
         print("Error has happened") 
-root = tk.Tk()
-mf = tk.Frame(root)
-mf.pack()
-tk.Label(mf, text='Spindle Angle:').grid(row=1, column=0)
-txtCMD = tk.StringVar()
-tk.Entry(mf, textvariable=txtCMD).grid(row=1, column=1)
-tk.Button(mf, text='Send', command=sendCommand).grid(row=1, column=2)
-tk.Button(mf, text='Move Right', command=moveRight).grid(row=5, column=3)
-tk.Button(mf, text='Move Left', command=moveLeft).grid(row=5, column=1)
-tk.Button(mf, text='Move Backward', command=moveBackward).grid(row=6, column=2)
-tk.Button(mf, text='Move Forward', command=moveForward).grid(row=4, column=2)
-tk.Button(mf, text='Stop motors', command=stopMotors).grid(row=4, column=1)
-tk.Button(mf, text='Line Follower', command=lineFollower).grid(row=4, column=0)
-root.title('Wifi motors control')
-root.mainloop()
+# Initialize a variable to track if any movement key is pressed
+# movement_key_pressed = False
+# while True:
+#     if keyboard.is_pressed("w"):
+#         moveForward()
+#         movement_key_pressed = True
+#     elif keyboard.is_pressed("s"):
+#         moveBackward()
+#         movement_key_pressed = True
+#     elif keyboard.is_pressed("d"):
+#         moveRight()
+#         movement_key_pressed = True
+#     elif keyboard.is_pressed("a"):
+#         moveLeft()
+#         movement_key_pressed = True
+#     elif keyboard.is_pressed("e"):
+#         moveFowardRight()
+#         movement_key_pressed = True
+#     elif keyboard.is_pressed("q"):
+#         moveForwardLeft()
+#         movement_key_pressed = True
+#     elif keyboard.is_pressed("c"):
+#         servoClockwise()
+        
+#     elif keyboard.is_pressed("x"):
+#         servoAnticlockwise()
+        
+#     else:
+#         # Condition for checking if any key is pressed
+#         if movement_key_pressed:
+#             stopMotors()
+#             movement_key_pressed = False

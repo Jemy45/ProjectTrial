@@ -1,8 +1,7 @@
 import cv2 as cv
 from PyQt5.QtCore import pyqtSignal, QObject
 import numpy as np
-
-url1 = 'http://192.168.220.244:8080/video'
+import gemy
 
 lower_black = np.array([0, 0, 0])
 upper_black = np.array([50, 50, 50])
@@ -21,6 +20,8 @@ cv.createTrackbar("Area", "TrackBar", 200, 10000, empty)
 class FrameProcessor(QObject):
 
     frame_processed = pyqtSignal(object)
+    # this is the counter that can be control the autonomous mode and can be conrolled using line follower's button 
+    auto = 0 
 
     def __init__(self, url):
         super().__init__()
@@ -29,6 +30,7 @@ class FrameProcessor(QObject):
 
 
     def line_follower(self, frame):
+        gemy.lineFollower_auto()
         BlackLine = cv.inRange(frame, lower_black, upper_black) # create the mask
         BlackLine = cv.erode(BlackLine, kernel, iterations=1) # apply some morophological operational
         BlackLine = cv.dilate(BlackLine, kernel, iterations=2)
@@ -113,8 +115,10 @@ class FrameProcessor(QObject):
     def process_frame_2(self):
         ret, frame = self.camera.read()
         if ret:
-            # Perform some processing operations here
             processed_frame = cv.resize(frame, (540, 960))
+            if self.auto:
+                self.line_follower(processed_frame)
 
             self.frame_processed.emit(processed_frame)
-
+                
+                
