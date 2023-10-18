@@ -3,6 +3,7 @@ from PyQt5.QtCore import pyqtSignal, QObject
 import numpy as np
 import gemy
 
+
 lower_black = np.array([0, 0, 0])
 upper_black = np.array([50, 50, 50])
 kernel = np.ones((5,5), np.uint8)
@@ -21,7 +22,7 @@ class FrameProcessor(QObject):
 
     frame_processed = pyqtSignal(object)
     # this is the counter that can be control the autonomous mode and can be conrolled using line follower's button 
-    auto = 0 
+    mode = 0  # 0 -> normal mode |  1 -> line follower |  2 -> detection mode
 
     def __init__(self, url):
         super().__init__()
@@ -30,17 +31,19 @@ class FrameProcessor(QObject):
 
 
     def line_follower(self, frame):
-        gemy.lineFollower_auto()
-        BlackLine = cv.inRange(frame, lower_black, upper_black) # create the mask
+        """line follower function turn the auto mode and let the rover track the black line"""
+        # gemy.lineFollower_auto()
+        frame_crop = frame[480:, :]
+        BlackLine = cv.inRange(frame_crop, lower_black, upper_black) # create the mask
         BlackLine = cv.erode(BlackLine, kernel, iterations=1) # apply some morophological operational
         BlackLine = cv.dilate(BlackLine, kernel, iterations=2)
 
-        contoursBlk, hierarchyBlk = cv.findContours(BlackLine, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+        contoursBlk, _ = cv.findContours(BlackLine, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
         if len(contoursBlk) > 0:
             biggest_contour = max(contoursBlk, key = cv.contourArea)
             blackbox = cv.minAreaRect(biggest_contour) 
             (x_min, y_min), (w_min, h_min), ang = blackbox
-            setPoint = 270 # the set point is the half of the camera's resolution = 960/2
+            setPoint = 270 # the set point is the half of the camera's resolution = 540/2
             error = int(x_min) - setPoint # center line of the black line -  set Point
             ang = int(ang)
             
@@ -49,14 +52,14 @@ class FrameProcessor(QObject):
             box = cv.boxPoints(blackbox)
             box = np.int0(box)
             cv.drawContours(frame, [box], 0, (0,255,0), 2)
-            cv.putText(frame, str(ang), (10, 40), cv.FONT_HERSHEY_COMPLEX, 1, (0,0,255), 2)
-            cv.putText(frame, str(error), (10, 500), cv.FONT_HERSHEY_COMPLEX, 1, (0,0,255), 2)
-            cv.line(frame, (int(x_min), 200), (int(x_min), 250 ), (255,0,0), 3)
-            cv.line(frame, (int(x_min) , 200), (setPoint, 200), (0,255,0), 3)
+            cv.putText(frame, str(ang), (10, 200), cv.FONT_HERSHEY_COMPLEX, 1, (0,0,255), 2)
+            cv.putText(frame, str(error), (10, 750), cv.FONT_HERSHEY_COMPLEX, 1, (0,0,255), 2)
+            cv.line(frame, (int(x_min), 600), (int(x_min), 650 ), (255,0,0), 3)
+            cv.line(frame, (int(x_min) , 600), (setPoint, 600), (0,255,0), 3)
     
     def get_contours(self, img, imgContour):
         """ this is a function that takes the mask and the frame and it extracts the contours from the mask and draw it in the frame"""
-        contours, hierarchy = cv.findContours(img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+        contours, _ = cv.findContours(img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
         # Loop through detected contours
         for cnt in contours:
@@ -107,18 +110,23 @@ class FrameProcessor(QObject):
     def process_frame_1(self):
         ret, frame = self.camera.read()
         if ret:
-            # Perform some processing operations here
             processed_frame = cv.resize(frame, (540, 960))
-            self.shape_detection(processed_frame)
-            self.frame_processed.emit(processed_frame)
-
-    def process_frame_2(self):
-        ret, frame = self.camera.read()
-        if ret:
-            processed_frame = cv.resize(frame, (540, 960))
-            if self.auto:
+            if self.mode == 1: # turn line follower mode
                 self.line_follower(processed_frame)
 
+            if self.mode == 2: # turn shape detection mode
+                self.shape_detection(processed_frame)
+
             self.frame_processed.emit(processed_frame)
-                
-                
+
+        else:
+            print("there is some error happend in reading the frames")    
+
+    # def process_frame_2(self):
+    #     ret, frame = self.camera.read()
+    #     if ret:
+    #         processed_frame = cv.resize(frame, (540, 960))
+    #         if self.mode:
+    #             self.line_follower(processed_frame)
+
+    #         self.frame_processed.emit(processed_frame)

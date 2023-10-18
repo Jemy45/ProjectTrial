@@ -104,19 +104,6 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>430</y>
-      <width>101</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Camera 2 (line)</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
@@ -128,22 +115,6 @@
     </property>
     <property name="text">
      <string>Tracking</string>
-    </property>
-   </widget>
-   <widget class="QFrame" name="frame_3">
-    <property name="geometry">
-     <rect>
-      <x>700</x>
-      <y>50</y>
-      <width>381</width>
-      <height>231</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
     </property>
    </widget>
    <widget class="QLabel" name="label_8">
@@ -248,19 +219,6 @@
     </property>
     <property name="text">
      <string>Yellow:</string>
-    </property>
-   </widget>
-   <widget class="Line" name="line_2">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>440</y>
-      <width>118</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
    <widget class="Line" name="line_3">
@@ -809,26 +767,13 @@
      </property>
     </widget>
    </widget>
-   <widget class="QLabel" name="camera2_label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>450</y>
-      <width>641</width>
-      <height>351</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>c2</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="camera1_label">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>40</y>
       <width>641</width>
-      <height>381</height>
+      <height>611</height>
      </rect>
     </property>
     <property name="text">
@@ -968,7 +913,7 @@
    <widget class="QLabel" name="label_21">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>720</x>
       <y>440</y>
       <width>71</width>
       <height>41</height>
@@ -981,7 +926,7 @@
    <widget class="QLabel" name="counterLabel_M">
     <property name="geometry">
      <rect>
-      <x>750</x>
+      <x>770</x>
       <y>450</y>
       <width>55</width>
       <height>16</height>
@@ -1074,7 +1019,7 @@
      <rect>
       <x>670</x>
       <y>450</y>
-      <width>21</width>
+      <width>41</width>
       <height>28</height>
      </rect>
     </property>
@@ -1082,7 +1027,7 @@
      <string>M</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="lineFollower_l">
+   <widget class="QPushButton" name="lineFollower_button">
     <property name="geometry">
      <rect>
       <x>680</x>
@@ -1093,6 +1038,29 @@
     </property>
     <property name="text">
      <string>Line follower</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="mpl_container" native="true">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>50</y>
+      <width>431</width>
+      <height>231</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="detection_button">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>500</y>
+      <width>131</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Detection</string>
     </property>
    </widget>
   </widget>

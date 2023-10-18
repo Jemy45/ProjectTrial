@@ -7,9 +7,12 @@ from os import path
 import cv2 as cv
 from detection import FrameProcessor
 import gemy 
+# from matplotlib.figure import Figure
+# from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+# import matplotlib.pyplot as plt
+# import serial
 
-url1 = 'http://192.168.220.244:8080/video'
-url2 = 'http://192.168.220.220:8080/video'
+url = 'http://192.168.220.244:8080/video'
 esp8266_ip = "192.168.4.1" 
 
 class MYGUI(QMainWindow):
@@ -24,29 +27,28 @@ class MYGUI(QMainWindow):
                 
                 # Find the QLabel widgets created in Qt Designer 
                 self.video_label_1 = self.findChild(QLabel, "camera1_label")
-                self.video_label_2 = self.findChild(QLabel, "camera2_label")
                 
                 # Create FrameProcessor instances for each camera
-                self.frame_processor_1 = FrameProcessor(url1)
-                self.frame_processor_2 = FrameProcessor(0)
+                self.frame_processor_1 = FrameProcessor(url)
 
                 # Connect the frame_processed signals to update methods
                 self.frame_processor_1.frame_processed.connect(self.update_frame_1)
-                self.frame_processor_2.frame_processed.connect(self.update_frame_2)
                 
-                # Create timers to start processing frames for each camer
+                # Create timers to start processing frames for each camera
                 self.timer_camera1 = QTimer(self)
-                self.timer_camera2 = QTimer(self)
 
                 self.timer_camera1.timeout.connect(self.frame_processor_1.process_frame_1)
-                self.timer_camera2.timeout.connect(self.frame_processor_2.process_frame_2)
 
                 self.timer_camera1.start(10)  # Update the frame every 30 milliseconds for camera 1
-                self.timer_camera2.start(10)  # Update the frame every 30 milliseconds for camera 2
 
-                self.line_button = self.findChild(QPushButton, "lineFollower_l")
-                self.line_button.clicked.connect(lambda: self.adjust_auto(self.frame_processor_2.auto))
+                # adjust line follower button
+                self.line_button = self.findChild(QPushButton, "lineFollower_button")
+                self.line_button.clicked.connect(lambda: self.adjust_auto(self.frame_processor_1.mode))
                 
+                # adjust detection button
+                self.detection = self.findChild(QPushButton, "detection_button")
+                self.detection.clicked.connect(lambda: self.adjust_detection(self.frame_processor_1.mode))
+
 
                 #-----------------------------------------------------------
                 # initilize counters
@@ -98,10 +100,10 @@ class MYGUI(QMainWindow):
 
                 self.show()
 
-                # self.pushButton.clicked.connect(self.send)
                 self.actionclose.triggered.connect(exit)
 
-        def update_frame_1(self, processed_frame):
+
+        def update_frame_1(self, processed_frame): 
                 # Display the processed frame from camera 1 on the label camera1_label
                 if processed_frame.shape == (0, 0, 0):
                         return
@@ -113,22 +115,11 @@ class MYGUI(QMainWindow):
                 pixmap = QPixmap.fromImage(q_image)
                 self.video_label_1.setPixmap(pixmap)      
 
-        def update_frame_2(self, processed_frame):
-        # Display the processed frame from camera 2 on the label camera2_label
-                if processed_frame.shape == (0, 0, 0):
-                        return
-                
-                processed_frame = cv.cvtColor(processed_frame, cv.COLOR_BGR2RGB)
-                height, width, channel = processed_frame.shape
-                bytes_per_line = 3 * width
-                q_image = QImage(processed_frame.data, width, height, bytes_per_line, QImage.Format_RGB888)
-                pixmap = QPixmap.fromImage(q_image)
-                self.video_label_2.setPixmap(pixmap)           
+
 
         def closeEvent(self, event):
-                # Release the cameras and perform cleanup for both processors
+                # Release the camera and perform cleanup for both processors
                 self.frame_processor_1.camera.release()
-                self.frame_processor_2.camera.release()
                 event.accept()    
 
         def keyPressEvent(self, event):
@@ -163,11 +154,19 @@ class MYGUI(QMainWindow):
                         print("N key is pressed")
                         gemy.servoAnticlockwise()              
 
-        def adjust_auto(self, val):
-                if val:
-                        self.frame_processor_2.auto = 0
+        def adjust_auto(self, mode):
+                """adjust line follower mode"""
+                if mode == 0 or mode == 2: # if it is in normal mode or in detection mode 
+                        self.frame_processor_1.mode = 1 # set the line follower mode
+                else: 
+                        self.frame_processor_1.mode = 0
+
+        def adjust_detection(self, mode): 
+                """adjust detection mode"""
+                if mode == 0 or mode == 1: # if it is in normal mode or in line follower
+                        self.frame_processor_1.mode = 2 # set the detection mode
                 else:
-                        self.frame_processor_2.auto = 1
+                        self.frame_processor_1.mode = 0
 
         def increment_metals(self):
                 self.metals += 1
