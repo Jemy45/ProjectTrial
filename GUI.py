@@ -12,8 +12,8 @@ import gemy
 # import matplotlib.pyplot as plt
 # import serial
 
-url = 'http://192.168.220.244:8080/video'
-esp8266_ip = "192.168.4.1" 
+url = 'http://192.168.137.72:8080/video'
+esp8266_ip = "192.168.137.37" 
 
 class MYGUI(QMainWindow):
 

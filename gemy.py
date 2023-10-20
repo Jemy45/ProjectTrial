@@ -3,7 +3,7 @@ import keyboard
 import requests
 
 #----------default access point ip for esp8266 also you can get it from ide -------------------
-esp8266_ip = "192.168.4.1" 
+esp8266_ip = "192.168.137.37" 
 
 #---------Functions for sending strings for my motion over url---------------------
 def sendCommand(error):

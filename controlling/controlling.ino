@@ -183,6 +183,10 @@ void handlePostData() {
     Serial.println(servoAngle); 
   
   }
+  if(receivedData == "auto")
+  {
+    lineFollower(line_error);
+  }
   
 }
 
@@ -221,7 +225,7 @@ void handleMotors(String state)
       stopMotors();
       break;
     case 'a':
-      lineFollower(line_error, angle_error);  
+      lineFollower(line_error);  
       break;
     case 'e':
        moveForwardRight(speed);
@@ -318,21 +322,23 @@ float calc_distance()
     Serial.println(distance);
     return distance;
 }
-void lineFollower(int Line_error, int angle_error)
+void lineFollower(int Line_error)
 {
+  Serial.println("Line Follower Working");
+  Serial.println(Line_error);
 
-  while(Line_error<0 || angle_error<89)
+  if(Line_error<0 )
   {
     moveForwardLeft(Line_speed);
 
     delay(1000);
   }
-  while(Line_error>0 || angle_error>91)
+  if(Line_error>0 )
   {
     moveForwardRight(Line_speed);
     delay(1000);
   }
-  while(Line_error==0 || angle_error == 90)
+  if(Line_error==0)
   {
     moveForward(Line_speed);
      delay(1000);
