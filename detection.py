@@ -32,7 +32,7 @@ class FrameProcessor(QObject):
 
     def line_follower(self, frame):
         """line follower function turn the auto mode and let the rover track the black line"""
-        gemy.sendCommand(5)
+        gemy.sendCommand(error)
         gemy.lineFollower_auto()
         frame_crop = frame[480:, :]
         BlackLine = cv.inRange(frame_crop, lower_black, upper_black) # create the mask
